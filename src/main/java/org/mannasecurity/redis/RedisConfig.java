@@ -16,30 +16,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * Created by jtmelton on 6/20/17.
  */
 @Configuration
-public class RedisPublisherConfig {
+public class RedisConfig {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-//    @Bean
-//    RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
-//                                            MessageListenerAdapter listenerAdapter) {
-//
-//        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-//        container.setConnectionFactory(connectionFactory);
-//        container.addMessageListener(listenerAdapter, new PatternTopic("chat"));
-//
-//        return container;
-//    }
-//
-//    @Bean
-//    MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
-//        return new MessageListenerAdapter(subscriber, "receive");
-//    }
-//
-//    @Bean
-//    RedisSubscriber subscriber() {
-//        return new RedisSubscriber();
-//    }
 
     @Bean
     public Jackson2JsonRedisSerializer<TaskRequest> taskRequestSerializer() {
@@ -76,19 +55,4 @@ public class RedisPublisherConfig {
         return template;
     }
 
-//    public static void main(String[] args) throws InterruptedException {
-//
-//        ApplicationContext ctx = SpringApplication.run(RedisPublisherConfig.class, args);
-//
-//        StringRedisTemplate template = ctx.getBean(StringRedisTemplate.class);
-//        CountDownLatch latch = ctx.getBean(CountDownLatch.class);
-//
-////        LOGGER.info("Sending message...");
-////        template.opsForList().po
-//        template.convertAndSend("chat", "Hello from Redis!");
-//
-//        latch.await();
-//
-//        System.exit(0);
-//    }
 }
