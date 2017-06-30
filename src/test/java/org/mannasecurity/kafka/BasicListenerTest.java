@@ -6,10 +6,6 @@ package org.mannasecurity.kafka;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.mannasecurity.domain.ProjectMetadata;
-import org.mannasecurity.kafka.listeners.CloneRequestListener;
-import org.mannasecurity.kafka.listeners.ScanRequestListener;
-import org.mannasecurity.kafka.listeners.VerifyResultsListener;
 import java.nio.charset.StandardCharsets;
 import org.apache.kafka.common.utils.Bytes;
 import org.junit.AfterClass;
@@ -17,6 +13,10 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mannasecurity.domain.ProjectMetadata;
+import org.mannasecurity.kafka.listeners.CloneRequestListener;
+import org.mannasecurity.kafka.listeners.ScanRequestListener;
+import org.mannasecurity.kafka.listeners.VerifyResultsListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;

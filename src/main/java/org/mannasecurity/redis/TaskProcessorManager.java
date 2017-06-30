@@ -27,6 +27,9 @@ public class TaskProcessorManager {
 
     private Map<String, TaskProcessor> channelProcessorMap;
 
+    public TaskProcessorManager() {}
+
+    @Autowired
     public TaskProcessorManager(final Map<String, TaskProcessor> channelProcessorMap) {
         this.channelProcessorMap = Collections.unmodifiableMap(channelProcessorMap);
     }
