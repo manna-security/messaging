@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.mannasecurity.domain.TaskRequest;
+import org.mannasecurity.processing.TaskProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,9 +72,10 @@ public class TaskProcessorManager {
                 try {
                     TaskRequest request = operations.rightPop(30, TimeUnit.SECONDS);
 
-                    if(request != null) {
-                        innerlog.debug("Received TaskRequest to process on channel '{}' and sending to "
-                                       + "processor '{}'", channel, processor.getClass());
+                    if (request != null) {
+                        innerlog.debug(
+                            "Received TaskRequest to process on channel '{}' and sending to "
+                            + "processor '{}'", channel, processor.getClass());
 
                         processor.process(request);
                     }
