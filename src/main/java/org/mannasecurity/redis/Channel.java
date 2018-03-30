@@ -6,7 +6,7 @@ package org.mannasecurity.redis;
 public enum Channel {
 
     // clone request based on schedule
-    // - in  -> scheduler
+    // - in  -> scheduler || GH service commit hook
     // - out -> GH service
     CLONE_REQUEST,
 

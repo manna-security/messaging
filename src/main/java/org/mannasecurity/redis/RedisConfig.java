@@ -1,16 +1,20 @@
 package org.mannasecurity.redis;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.mannasecurity.domain.TaskRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 /**
  * Created by jtmelton on 6/20/17.
@@ -24,24 +28,17 @@ public class RedisConfig {
     public Jackson2JsonRedisSerializer<TaskRequest> taskRequestSerializer() {
         Jackson2JsonRedisSerializer<TaskRequest> serializer = new
             Jackson2JsonRedisSerializer<>(TaskRequest.class);
+        serializer.setObjectMapper(serializingObjectMapper());
         return serializer;
     }
 
     @Bean
-    public RedisSerializer<byte[]> byteSerializer() {
-        RedisSerializer<byte[]> byteSerializer = new RedisSerializer<byte[]>() {
-            @Override
-            public byte[] serialize(byte[] bytes) throws SerializationException {
-                return bytes;
-            }
-
-            @Override
-            public byte[] deserialize(byte[] bytes) throws SerializationException {
-                return bytes;
-            }
-        };
-
-        return byteSerializer;
+    @Primary
+    public ObjectMapper serializingObjectMapper() {
+        return Jackson2ObjectMapperBuilder.json()
+            .serializationInclusion(JsonInclude.Include.NON_NULL) // Don’t include null values
+            .modules(new JavaTimeModule())
+            .build();
     }
 
     @Bean
@@ -49,8 +46,15 @@ public class RedisConfig {
         RedisTemplate<String, TaskRequest> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(taskRequestSerializer());
+        RedisSerializer<String> stringSerializer = new StringRedisSerializer();
+        RedisSerializer<TaskRequest> requestSerializer = taskRequestSerializer();
+
+        template.setKeySerializer(stringSerializer);
+        template.setValueSerializer(requestSerializer);
+        template.setHashKeySerializer(stringSerializer);
+        template.setHashValueSerializer(requestSerializer);
+
+        template.setEnableDefaultSerializer(false);
 
         return template;
     }

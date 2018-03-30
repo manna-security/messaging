@@ -17,7 +17,7 @@ public class CloneRequestListener {
 
     private AtomicInteger count = new AtomicInteger();
 
-    @KafkaListener(id = "CloneRequestListener", topics = "CLONE_REQUEST", group =
+    @KafkaListener(id = "CloneRequestListener", topics = "CLONE_REQUEST", containerGroup =
         "orchestrator-group")
     public void listen(ConsumerRecord<ProjectMetadata, Bytes> record) {
         System.out.println("received a CloneRequestListener record: " + record);

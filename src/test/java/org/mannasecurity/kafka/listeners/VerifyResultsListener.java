@@ -17,7 +17,7 @@ public class VerifyResultsListener {
 
     private AtomicInteger count = new AtomicInteger();
 
-    @KafkaListener(id = "VerifyResultsListener", topics = "VERIFY_RESULTS", group =
+    @KafkaListener(id = "VerifyResultsListener", topics = "VERIFY_RESULTS", containerGroup =
         "orchestrator-group")
     public void listen(ConsumerRecord<ProjectMetadata, Bytes> record) {
         System.out.println("received a VerifyResultsListener record: " + record);

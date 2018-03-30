@@ -26,7 +26,7 @@ public class KafkaProducerConfig {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${kafka.brokerAddress}")
+    @Value("${kafka.brokerAddress:localhost}")
     private String brokerAddress;
 
     @Bean

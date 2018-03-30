@@ -17,7 +17,7 @@ public class ScanRequestListener {
 
     private AtomicInteger count = new AtomicInteger();
 
-    @KafkaListener(id = "ScanRequestListener", topics = "SCAN_REQUEST", group =
+    @KafkaListener(id = "ScanRequestListener", topics = "SCAN_REQUEST", containerGroup =
         "orchestrator-group")
     public void listen(ConsumerRecord<ProjectMetadata, Bytes> record) {
         System.out.println("received a ScanRequestListener record: " + record);

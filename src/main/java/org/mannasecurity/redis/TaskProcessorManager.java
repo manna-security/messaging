@@ -8,6 +8,7 @@ import org.mannasecurity.processing.TaskProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
  * Created by jtmelton on 6/21/17.
  */
 @Component
+@Scope("singleton")
 public class TaskProcessorManager {
 
     private final Logger mainlog = LoggerFactory.getLogger(this.getClass());
@@ -27,7 +29,8 @@ public class TaskProcessorManager {
 
     private Map<String, TaskProcessor> channelProcessorMap;
 
-    public TaskProcessorManager() {}
+    public TaskProcessorManager() {
+    }
 
     @Autowired
     public TaskProcessorManager(final Map<String, TaskProcessor> channelProcessorMap) {
@@ -73,7 +76,7 @@ public class TaskProcessorManager {
 
             while (running) {
                 try {
-                    TaskRequest request = operations.rightPop(30, TimeUnit.SECONDS);
+                    TaskRequest request = operations.rightPop(1, TimeUnit.SECONDS);
 
                     if (request != null) {
                         innerlog.debug(
@@ -83,7 +86,7 @@ public class TaskProcessorManager {
                         processor.process(request);
                     }
                 } catch (RuntimeException e) {
-                    innerlog.debug("Redis error found.", e);
+                    innerlog.error("Redis error found.", e);
                 }
             }
         }

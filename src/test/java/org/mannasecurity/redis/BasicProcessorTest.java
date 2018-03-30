@@ -47,10 +47,12 @@ public class BasicProcessorTest {
     public static void setUp() throws Exception {
         redisServer = new RedisServer(6379);
         redisServer.start();
+//        Thread.sleep(500);
     }
 
     @AfterClass
-    public static void tearDown() {
+    public static void tearDown() throws Exception {
+//        Thread.sleep(500);
         redisServer.stop();
     }
 
@@ -66,28 +68,36 @@ public class BasicProcessorTest {
 
         taskProcessorManager.start();
 
-        template.opsForList().leftPush(Channel.CLONE_REQUEST.toString(), new TaskRequest());
-        template.opsForList().leftPush(Channel.CLONE_REQUEST.toString(), new TaskRequest());
-        template.opsForList().leftPush(Channel.CLONE_REQUEST.toString(), new TaskRequest());
-        template.opsForList().leftPush(Channel.CLONE_REQUEST.toString(), new TaskRequest());
-        template.opsForList().leftPush(Channel.CLONE_REQUEST.toString(), new TaskRequest());
-        template.opsForList().leftPush(Channel.CLONE_REQUEST.toString(), new TaskRequest());
-        template.opsForList().leftPush(Channel.CLONE_REQUEST.toString(), new TaskRequest());
+        Thread.sleep(5000);
 
-        template.opsForList().leftPush(Channel.SCAN_REQUEST.toString(), new TaskRequest());
-        template.opsForList().leftPush(Channel.SCAN_REQUEST.toString(), new TaskRequest());
-        template.opsForList().leftPush(Channel.SCAN_REQUEST.toString(), new TaskRequest());
-        template.opsForList().leftPush(Channel.SCAN_REQUEST.toString(), new TaskRequest());
+        sendToChannel(Channel.CLONE_REQUEST.toString(), cloneRequestProcessor.count());
+        sendToChannel(Channel.CLONE_REQUEST.toString(), cloneRequestProcessor.count());
+        sendToChannel(Channel.CLONE_REQUEST.toString(), cloneRequestProcessor.count());
+        sendToChannel(Channel.CLONE_REQUEST.toString(), cloneRequestProcessor.count());
+        sendToChannel(Channel.CLONE_REQUEST.toString(), cloneRequestProcessor.count());
+        sendToChannel(Channel.CLONE_REQUEST.toString(), cloneRequestProcessor.count());
+        sendToChannel(Channel.CLONE_REQUEST.toString(), cloneRequestProcessor.count());
 
-        template.opsForList().leftPush(Channel.VERIFY_RESULTS.toString(), new TaskRequest());
-        template.opsForList().leftPush(Channel.VERIFY_RESULTS.toString(), new TaskRequest());
-        template.opsForList().leftPush(Channel.VERIFY_RESULTS.toString(), new TaskRequest());
+        sendToChannel(Channel.SCAN_REQUEST.toString(), scanRequestProcessor.count());
+        sendToChannel(Channel.SCAN_REQUEST.toString(), scanRequestProcessor.count());
+        sendToChannel(Channel.SCAN_REQUEST.toString(), scanRequestProcessor.count());
+        sendToChannel(Channel.SCAN_REQUEST.toString(), scanRequestProcessor.count());
 
-        Thread.sleep(3000);
+        sendToChannel(Channel.VERIFY_RESULTS.toString(), verifyResultsProcessor.count());
+        sendToChannel(Channel.VERIFY_RESULTS.toString(), verifyResultsProcessor.count());
+        sendToChannel(Channel.VERIFY_RESULTS.toString(), verifyResultsProcessor.count());
+
+        Thread.sleep(5000);
 
         assertThat(cloneRequestProcessor.count()).isEqualTo(7);
         assertThat(scanRequestProcessor.count()).isEqualTo(4);
         assertThat(verifyResultsProcessor.count()).isEqualTo(3);
+    }
+
+    private void sendToChannel(String channel, int count) throws Exception {
+        template.opsForList().leftPush(channel, new TaskRequest());
+//        Thread.sleep(2000);
+        System.err.println(count +  " [" + channel + "]");
     }
 
 }
